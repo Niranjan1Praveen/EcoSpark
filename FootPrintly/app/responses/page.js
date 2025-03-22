@@ -34,8 +34,8 @@ export default function Page() {
       .then((data) => setQuestions(data))
       .catch((err) => console.error("Error fetching questions:", err));
   }, []);
-  const authToken = localStorage.getItem("authToken");
   useEffect(() => {
+    const authToken = localStorage.getItem("authToken");
     if (authToken) {
       fetch(`http://localhost:3001/api/user-score?authToken=${authToken}`)
         .then((res) => res.json())
