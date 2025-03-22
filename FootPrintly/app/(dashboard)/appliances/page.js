@@ -57,7 +57,6 @@ const appliances = [
 
 const ApplianceSelection = () => {
   const [values, setValues] = useState({});
-  const authToken = localStorage.getItem("authToken");
 
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
@@ -65,14 +64,18 @@ const ApplianceSelection = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const authToken = localStorage.getItem("authToken");
     try {
-      const response = await fetch(`http://localhost:3001/save-appliances/${authToken}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
+      const response = await fetch(
+        `http://localhost:3001/save-appliances/${authToken}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+        }
+      );
 
       const result = await response.json();
       alert(result.message);
@@ -83,47 +86,56 @@ const ApplianceSelection = () => {
 
   return (
     <div className="section-p flex flex-col gap-5 min-h-screen">
-      <h1 className="text-2xl sm:text-3xl font-bold mb-4">Select Your Appliances</h1>
-      <form className="grid lg:grid-cols-3 md:grid-cols-2 gap-[15px]" onSubmit={handleSubmit}>
+      <h1 className="text-2xl sm:text-3xl font-bold mb-4">
+        Select Your Appliances
+      </h1>
+      <form
+        className="grid lg:grid-cols-3 md:grid-cols-2 gap-[15px]"
+        onSubmit={handleSubmit}
+      >
         {appliances.map((section, index) => (
-          <fieldset key={index} className="p-4 rounded-xl bg-white border shadow-sm">
+          <fieldset
+            key={index}
+            className="p-4 rounded-xl bg-white border shadow-sm"
+          >
             <legend className="font-semibold text-lg text-center mx-auto px-2 py-1 rounded-xl w-max">
               {section.category}
             </legend>
-            {section.subcategories ? (
-              section.subcategories.map((sub, subIndex) => (
-                <fieldset key={subIndex} className="p-3 rounded-lg mt-2 border border-gray-200">
-                  <legend className="text-sm font-medium">{sub.name}</legend>
-                  {sub.items.map((item, itemIndex) => (
-                    <div key={itemIndex} className="flex items-center mt-2">
-                      <label className="w-64">{item}:</label>
-                      <input
-                        type="number"
-                        name={item}
-                        min="0"
-                        value={values[item] || "0"}
-                        onChange={handleChange}
-                        className="border rounded p-1 w-16"
-                      />
-                    </div>
-                  ))}
-                </fieldset>
-              ))
-            ) : (
-              section.items.map((item, itemIndex) => (
-                <div key={itemIndex} className="flex items-center mt-2">
-                  <label className="w-64">{item}:</label>
-                  <input
-                    type="number"
-                    name={item}
-                    min="0"
-                    value={values[item] || "0"}
-                    onChange={handleChange}
-                    className="border rounded p-1 w-16"
-                  />
-                </div>
-              ))
-            )}
+            {section.subcategories
+              ? section.subcategories.map((sub, subIndex) => (
+                  <fieldset
+                    key={subIndex}
+                    className="p-3 rounded-lg mt-2 border border-gray-200"
+                  >
+                    <legend className="text-sm font-medium">{sub.name}</legend>
+                    {sub.items.map((item, itemIndex) => (
+                      <div key={itemIndex} className="flex items-center mt-2">
+                        <label className="w-64">{item}:</label>
+                        <input
+                          type="number"
+                          name={item}
+                          min="0"
+                          value={values[item] || "0"}
+                          onChange={handleChange}
+                          className="border rounded p-1 w-16"
+                        />
+                      </div>
+                    ))}
+                  </fieldset>
+                ))
+              : section.items.map((item, itemIndex) => (
+                  <div key={itemIndex} className="flex items-center mt-2">
+                    <label className="w-64">{item}:</label>
+                    <input
+                      type="number"
+                      name={item}
+                      min="0"
+                      value={values[item] || "0"}
+                      onChange={handleChange}
+                      className="border rounded p-1 w-16"
+                    />
+                  </div>
+                ))}
           </fieldset>
         ))}
         <Button
