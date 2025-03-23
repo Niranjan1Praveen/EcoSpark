@@ -262,6 +262,21 @@ app.post("/save-appliances/:authToken", (req, res) => {
     res.json({ message: "Data saved successfully", user_id: this.lastID });
   });
 });
+// To get User Challenges
+app.get('/user-challenges', (req, res) => {
+  const query = 'SELECT * FROM UserChallenges';
+
+  db.all(query, [], (err, rows) => {
+      if (err) {
+          console.error('Error fetching data from UserChallenges:', err.message);
+          return res.status(500).json({ error: 'Failed to fetch data from UserChallenges' });
+      }
+
+      // Return the rows as a JSON response
+      res.status(200).json({ challenges: rows });
+  });
+});
+
 app.listen(3001, () => {
   console.log("Server is running on http://localhost:3001");
 });

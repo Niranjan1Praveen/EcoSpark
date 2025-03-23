@@ -1,35 +1,35 @@
 const data = [
-    {
-      question: "What is FootPrintly?",
-      answer:
-        "FootPrintly is an app that helps users track their daily habits, calculate their carbon footprint, and improve sustainability through actionable insights and challenges.",
-    },
-    {
-      question: "How does FootPrintly calculate my sustainability score?",
-      answer:
-        "Your score is based on responses to lifestyle questions covering transportation, diet, energy use, and waste management. Each choice is assigned an impact level to determine your overall score.",
-    },
-    {
-      question: "Is FootPrintly free to use?",
-      answer:
-        "Yes, FootPrintly is free to use, with optional premium features for additional insights and challenges.",
-    },
-    {
-      question: "How do Eco Challenges work?",
-      answer:
-        "Challenges are based on your habits, like reducing plastic use or trying a meat-free diet. Completing them earns you points and badges.",
-    },
-    {
-      question: "What rewards can I earn?",
-      answer:
-        "You can unlock eco-badges, rank higher on leaderboards, and access exclusive discounts on sustainable products.",
-    },
-    {
-      question: "Can I delete my data?",
-      answer:
-        "Yes, you can delete your account and data anytime from the settings.",
-    },
-  ];
-  
+  {
+    question: "What is EcoSpark?",
+    answer:
+      "EcoSpark is a platform that helps you track electricity and water usage, reduce consumption with AI-powered insights, and earn rewards for sustainable habits.",
+  },
+  {
+    question: "How does EcoSpark track my resource usage?",
+    answer:
+      "You can upload your electricity and water bills, and our AI extracts key insights to help you monitor your consumption trends.",
+  },
+  {
+    question: "What kind of insights does EcoSpark provide?",
+    answer:
+      "EcoSpark provides AI-driven recommendations to reduce electricity and water waste, helping you save resources and lower costs.",
+  },
+  {
+    question: "How do I earn rewards with EcoSpark?",
+    answer:
+      "By completing sustainability challenges and reducing your resource consumption, you earn points that can be redeemed for eco-friendly rewards and discounts.",
+  },
+  {
+    question: "Is EcoSpark free to use?",
+    answer:
+      "Yes, EcoSpark is free to use, with optional premium features for deeper insights and exclusive rewards.",
+  },
+  {
+    question: "Can I track my impact?",
+    answer:
+      "Yes! EcoSpark provides a dashboard where you can measure your contribution to sustainability based on your saved resources and completed challenges.",
+  },
+];
+
   export default data;
   

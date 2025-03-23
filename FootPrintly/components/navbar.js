@@ -81,6 +81,25 @@ export default function Navbar() {
         >
           Apps
         </h1>
+        <Link href="/appliances">
+          <li
+            className={`text-sm flex items-center gap-4 p-4 cursor-pointer
+            transition-all duration-300 ${
+              pathname === "/appliances"
+                ? "bg-[#1CB0F6] text-white"
+                : "hover:bg-gray-200"
+            }`}
+          >
+            <WashingMachine className="icon" />
+            <p
+              className={`${pathname === "/appliances" ? "text-white" : ""} ${
+                isNavbarOpen ? "block" : "hidden"
+              }`}
+            >
+              Appliances
+            </p>
+          </li>
+        </Link>
         <Link href="/gemini">
           <li
             className={`text-sm flex items-center gap-4 p-4 cursor-pointer
@@ -120,25 +139,7 @@ export default function Navbar() {
             </p>
           </li>
         </Link>
-        <Link href="/appliances">
-          <li
-            className={`text-sm flex items-center gap-4 p-4 cursor-pointer
-            transition-all duration-300 ${
-              pathname === "/appliances"
-                ? "bg-[#1CB0F6] text-white"
-                : "hover:bg-gray-200"
-            }`}
-          >
-            <WashingMachine className="icon" />
-            <p
-              className={`${pathname === "/appliances" ? "text-white" : ""} ${
-                isNavbarOpen ? "block" : "hidden"
-              }`}
-            >
-              Appliances
-            </p>
-          </li>
-        </Link>
+        
         {/* Community */}
         <h1
           className={`uppercase text-[0.9rem] px-4 ${
@@ -162,7 +163,7 @@ export default function Navbar() {
                 isNavbarOpen ? "block" : "hidden"
               }`}
             >
-              Community
+              Events
             </p>
           </li>
         </Link>

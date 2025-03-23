@@ -10,11 +10,10 @@ import {
   ShoppingCart,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Skeleton } from "@/components/ui/skeleton";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
-
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 function Page() {
@@ -23,28 +22,7 @@ function Page() {
   const [loading, setLoading] = useState(false);
   const [typing, setTyping] = useState(false);
   const [isResLoaded, setIsResLoaded] = useState(false);
-  const [userScore, setUserScore] = useState(0);
   const [challenges, setChallenges] = useState([]);
-
-  const questionTemplates = [
-    {
-      tempQS: `Based on my sustainability score of ${userScore}, suggest three eco-friendly challenges in a concise manner.`,
-      icon: <Footprints className="absolute bottom-2 right-2" />,
-      star: true,
-    },
-    {
-      tempQS: "What are some sustainable shopping habits?",
-      icon: <ShoppingCart className="absolute bottom-2 right-2" />,
-    },
-    {
-      tempQS: "How can I conserve water efficiently?",
-      icon: <Droplet className="absolute bottom-2 right-2" />,
-    },
-    {
-      tempQS: "What are some eco-friendly alternatives to plastic?",
-      icon: <Leaf className="absolute bottom-2 right-2" />,
-    },
-  ];
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -52,63 +30,43 @@ function Page() {
       if (!authToken) return;
 
       try {
-        const response = await fetch(
-          `http://localhost:3001/api/user/${authToken}`
+        const challengesResponse = await fetch(
+          "http://localhost:3001/user-challenges"
         );
-        const data = await response.json();
+        const challengesData = await challengesResponse.json();
+        console.log(challengesData);
 
-        if (response.ok) {
-          setUserScore(data.userScore);
-          const generatedChallenges = await generateChallenges(data.userScore);
-          setChallenges(extractChallenges(generatedChallenges));
+        if (challengesResponse.ok) {
+          setChallenges(challengesData.challenges.slice(0, 4));
         } else {
-          console.error("Error fetching user details:", data.error);
+          console.error("Error fetching challenges:", challengesData.error);
         }
       } catch (error) {
-        console.error("Error fetching user details:", error);
+        console.error("Error fetching data:", error);
       }
     };
 
     fetchUserDetails();
   }, []);
 
-  const generateChallenges = async (userScore) => {
-    let prompt = `Generate 4 simple yet effective challenges for a user to reduce their energy and water consumption at home based on their score of ${userScore}. The challenges should be practical, easy to implement, and tailored to their score.`;
-    try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-      const chatSession = model.startChat({ history: [] });
-      const result = await chatSession.sendMessage(prompt);
-      const aiResponse = await result.response.text();
-
-      return aiResponse;
-    } catch (error) {
-      console.error("Error generating challenges:", error);
-      return "❌ Failed to generate challenges. Please try again.";
-    }
-  };
-
-  const extractChallenges = (challengesText) => {
-    const challengesArray = challengesText.split("\n");
-    const filteredChallenges = challengesArray.filter((line) =>
-      line.startsWith("**Challenge")
-    );
-    return filteredChallenges.slice(0, 4);
-  };
-
   const sendPrompt = async (selectedPrompt) => {
     const finalPrompt = selectedPrompt || prompt.trim();
     if (!finalPrompt) return;
-
+  
     setLoading(true);
     setResponse("");
     setTyping(false);
     setPrompt(finalPrompt);
-
+  
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       const chatSession = model.startChat({ history: [] });
-      const result = await chatSession.sendMessage(finalPrompt);
+  
+      const detailedPrompt = `Explain the following challenge in detail, including why it's important, how to implement it, and its impact on sustainability: ${finalPrompt}`;
+  
+      const result = await chatSession.sendMessage(detailedPrompt);
       const aiResponse = await result.response.text();
+  
       setIsResLoaded(true);
       setLoading(false);
       setTyping(true);
@@ -119,7 +77,6 @@ function Page() {
       setLoading(false);
     }
   };
-
   const displayTypingEffect = (text) => {
     let index = 0;
     setResponse(text.charAt(0));
@@ -133,7 +90,6 @@ function Page() {
       }
     }, 5);
   };
-  console.log(challenges);
 
   const formatResponse = (text) => {
     return text
@@ -147,6 +103,7 @@ function Page() {
       sendPrompt();
     }
   };
+
   return (
     <main className="flex flex-col min-h-screen section-p gap-2">
       <div className="flex items-center p-[20px] gap-3">
@@ -157,22 +114,25 @@ function Page() {
       {/* Chat Section */}
       <div className="flex flex-col flex-grow overflow-y-auto">
         {!isResLoaded && (
-          <p className="text-4xl text-center">How can I help you today?</p>
+          <p className="text-4xl text-center">
+          What small change will you make today to help the planet?
+        </p>
         )}
+
         {/* Challenges Section */}
         {challenges.length > 0 ? (
           <div className="grid lg:grid-cols-4 gap-[15px] md:grid-cols-2 py-[75px]">
             {challenges.map((challenge, index) => (
               <div
-                key={index}
+                key={challenge.id}
                 className={`${
                   index === 0 && "bg-yellow-100 animate-shine"
                 } bg-white transition-all shadow-md p-4 rounded-xl relative min-h-[200px] cursor-pointer hover:bg-gray-200`}
-                onClick={() => sendPrompt(challenge)}
+                onClick={() => sendPrompt(challenge.challenge)}
               >
                 <p
                   dangerouslySetInnerHTML={{
-                    __html: formatResponse(challenge),
+                    __html: formatResponse(challenge.challenge),
                   }}
                 ></p>
               </div>

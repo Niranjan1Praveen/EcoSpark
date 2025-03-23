@@ -26,7 +26,7 @@ def init_db():
         cursor = conn.cursor()
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS electricity_bills (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                UserID VARCHAR(255),
                 name TEXT,
                 address TEXT,
                 bill_amount TEXT,
@@ -43,7 +43,8 @@ def init_db():
                 current_units_consumed TEXT,
                 subsidies_unit TEXT,
                 consumption_history TEXT,
-                goal_units TEXT
+                goal_units TEXT,
+                FOREIGN KEY (UserID) REFERENCES UsersTable(UserID)
             )
         ''')
         cursor.execute('''

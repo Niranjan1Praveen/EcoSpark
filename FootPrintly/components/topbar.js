@@ -96,7 +96,7 @@ function Topbar() {
       if (response.ok) {
         toast.success("Account deleted successfully.");
         localStorage.removeItem("authToken");
-        router.push("/"); // Redirect to home or login page
+        router.push("/"); 
       } else {
         toast.error("Failed to delete account.");
       }
@@ -107,7 +107,7 @@ function Topbar() {
   };
 
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-between gap-3">
       <div className="flex items-center border-2 border-gray-500 rounded-full px-2">
         <Search />
         <Input className="border-none shadow-none outline-none w-auto" placeholder="Search Anything" />

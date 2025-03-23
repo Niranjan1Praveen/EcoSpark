@@ -10,7 +10,6 @@ import Electronics from "../public/rewards/electronics.webp";
 import Books from "../public/rewards/books.webp";
 import Travel from "../public/rewards/flights.webp";
 import Fitness from "../public/rewards/fitness.webp";
-
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import {
@@ -26,11 +25,9 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ScratchCard } from "next-scratchcard";
 import Image from "next/image";
-
 const ScratchCoupon = () => {
   const [selectedVoucher, setSelectedVoucher] = useState(null);
   const [isComplete, setIsComplete] = useState(false);
-  const [screenWidth, setScreenWidth] = useState(800);
   const [userDetails, setUserDetails] = useState(null);
 
   useEffect(() => {
@@ -56,9 +53,6 @@ const ScratchCoupon = () => {
 
     fetchUserDetails();
   }, []);
-  useEffect(() => {
-    setScreenWidth(window.innerWidth);
-  }, []);
 
   const handleScratchComplete = () => {
     setIsComplete(true);
@@ -80,31 +74,35 @@ const ScratchCoupon = () => {
     { name: "Travel", code: "TRAVEL707", points: 600, image: Travel },
     { name: "Fitness", code: "FIT606", points: 400, image: Fitness },
   ];
-  
 
   return (
-    <main className="flex flex-col gap-6 p-5 bg-center rounded-md max-w-6xl mx-auto">
-      <h1 className="font-bold text-2xl sm:text-3xl">Choose your Rewards</h1>
-      <h2 className="text-md sm:text-lg">Redeem codes for your points</h2>
-
-      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <main className="flex flex-col gap-6 p-5 bg-center rounded-md mx-auto">
+      <div className="grid gap-6 sm:grid-cols-2 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 ">
         {vouchersList.map((voucher, index) => (
           <div
             key={index}
-            className="relative bg-white min-w-[200px] min-h-[220px] shadow-lg rounded-xl flex items-center justify-center text-center overflow-hidden group transition-all hover:scale-105"
+            className="relative bg-white min-w-[300px] min-h-[240px] shadow-lg rounded-xl flex items-center justify-center text-center overflow-hidden group transition-all hover:scale-105"
           >
             <Image
               src={voucher.image}
               alt={voucher.name}
-              layout="fill"
-              objectFit="cover"
+              fill
+              style={{ objectFit: "cover" }}
               className="absolute inset-0 transition-all duration-300 hover:blur-md"
+              priority
+              sizes="(max-width: 768px) 100vw"
             />
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-all duration-300">
               <h3 className="text-lg sm:text-xl font-semibold text-white">
                 {voucher.name}
               </h3>
-              <p className={`${userDetails?.userScore < voucher.points ? "text-red-400" : "text-[#1ed760]"} text-sm sm:text-base`}>
+              <p
+                className={`${
+                  userDetails?.userScore < voucher.points
+                    ? "text-red-400"
+                    : "text-[#1ed760]"
+                } text-sm sm:text-base`}
+              >
                 [{voucher.points} pts]
               </p>
             </div>

@@ -22,7 +22,7 @@ const Page = () => {
       location: "Delhi",
       date: "2025-04-10",
       slots: 20,
-      score: 150,
+      score: "10% off on Movie Tickets",
     },
     {
       id: 2,
@@ -31,7 +31,7 @@ const Page = () => {
       location: "Mumbai",
       date: "2025-04-15",
       slots: 15,
-      score: 250,
+      score: "Fast Food Coupons",
     },
     {
       id: 3,
@@ -40,7 +40,7 @@ const Page = () => {
       location: "Bangalore",
       date: "2025-04-20",
       slots: 10,
-      score: 70,
+      score: "Google Play cards",
     },
   ]);
 
@@ -60,7 +60,7 @@ const Page = () => {
             <p className="text-gray-600 mb-4">
               Slots Available: {activity.slots}
             </p>
-            <p className="text-black absolute top-0 right-0 bg-[#1ed760] rounded-bl-xl p-2 text-sm">For {activity.score} points</p>
+            <p className="absolute top-0 right-0 bg-[#1ed760] rounded-bl-xl p-2 text-sm font-bold">{activity.score}</p>
             <AlertDialog>
               <AlertDialogTrigger asChild>
               

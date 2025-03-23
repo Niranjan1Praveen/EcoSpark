@@ -106,6 +106,7 @@ export default function Page() {
     }
   };
   const handleSubmit = async () => {
+    const authToken = localStorage.getItem("authToken");
     if (!authToken) {
       console.error("AuthToken is missing");
       return;

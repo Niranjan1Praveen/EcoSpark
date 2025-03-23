@@ -17,6 +17,7 @@ import {
   Legend,
   Scatter,
 } from "recharts";
+import { Eye } from "lucide-react";
 
 const Page = () => {
   const [extractedText, setExtractedText] = useState("");
@@ -30,11 +31,10 @@ const Page = () => {
     axios
       .get("http://localhost:3001/api/electricity-bills")
       .then((response) => {
-        const data = response.data[response.data.length - 1]; // Get the latest entry
+        const data = response.data[response.data.length - 1];
         setElectricityBillDetails(data);
   
         if (data?.consumption_history) {
-          // Split by comma (,) instead of semicolon (;)
           const consumptionEntries = data.consumption_history.split(", ");
   
           const formattedData = consumptionEntries.map((entry) => {
@@ -135,7 +135,7 @@ const Page = () => {
             <p className="text-lg font-semibold mb-1">{item.title}</p>
             {item.title === "Subsidies" && item.value !== "Not Available" ? (
               <div className="text-[1.1rem] font-bold">
-                {item.value.split(". ").map((line, i) => (
+s                {item.value.split(". ").map((line, i) => (
                   <p key={i} className="mb-1 text-[#1CB0F6]">
                     • {line.trim()}
                   </p>
@@ -158,7 +158,7 @@ const Page = () => {
           {
             title: "Water Units Consumed",
             value:
-              WaterBillDetails?.water_usage || "Not Available",
+            WaterBillDetails?.water_usage || "Not Available",
           },
           {
             title: "Water Goal Units",
@@ -193,7 +193,7 @@ const Page = () => {
         {/* Electricity Bill Trends Chart */}
         <div className="col-span-2 bg-white shadow-md rounded-xl p-6 w-full flex flex-col">
           <p className="text-lg font-semibold mb-4">
-            Electricity Bill Trends{" "}
+            Electricity Usage Trends{" "}
             <small>[Consumption History for last {electricityData.length} months]</small>
           </p>
           <ResponsiveContainer width="100%" height={350}>
@@ -241,7 +241,7 @@ const Page = () => {
         {/* Water Trends Chart */}
         <div className="col-span-2 bg-white shadow-md rounded-xl p-6 w-full flex flex-col">
           <p className="text-lg font-semibold mb-4">
-            Water Trends <small>[Consumption History for last {waterData.length} months]</small>
+            Water Usage Trends <small>[Consumption History for last {waterData.length} months]</small>
           </p>
           <ResponsiveContainer width="100%" height={350}>
             <LineChart data={waterData}>
@@ -262,10 +262,11 @@ const Page = () => {
                 stroke="#1CB0F6"
                 strokeWidth={2}
                 dot={(props) => {
-                  const { cx, cy, payload } = props;
+                  const { cx, cy, payload, index } = props;
                   if (payload.usage === maxUsage) {
                     return (
                       <circle
+                        key={index}
                         cx={cx}
                         cy={cy}
                         r={6}
