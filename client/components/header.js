@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import xmark from "../public/icons/xmark.svg";
 import bars from "../public/icons/bars.svg";
 import signIn from "../public/icons/sign-in.svg";
