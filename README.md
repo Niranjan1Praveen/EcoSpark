@@ -17,16 +17,7 @@ def generate_challenge(category):
         "waste": "Avoid single-use plastics for 24 hours",
         "transport": "Try carpooling or public transit today"
     }
-    return challenges.get(category, "Share your eco-tip with a friend!")
 ```
-
-### 📊 Progress Tiers
-| Tier              | Points | Badge          |
-|-------------------|--------|----------------|
-| Seedling          | 0-100  | 🌱             |
-| Sprout            | 101-250| 🌿             |
-| Eco Champion      | 251-500| 🌳             |
-| Planet Guardian   | 501+   | 🌍             |
 
 ### 🔥 Unique Offerings
 - **AI-Powered Scratch Cards**: Reveal rewards through interactive scratch-offs
