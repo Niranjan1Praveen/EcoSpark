@@ -8,7 +8,7 @@ const EmptyList = () => {
       <Image src={EmptyGif} alt="Empty List Gif" width={300} height={300} />
       <p className="text-sm uppercase">No Data Available</p>
       <Link href={"/home"} className="pointer underline text-sm">
-        Go Back
+        Go Back to Home Page
       </Link>
     </section>
   );
