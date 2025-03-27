@@ -69,7 +69,6 @@ const ApplianceSelection = () => {
       </h1>
       <form
         className="grid grid-cols-1 md:grid-cols-2  gap-[15px]"
-        onSubmit={handleSubmit}
       >
         {appliances.map((section, index) => (
           <fieldset

@@ -17,7 +17,6 @@ import {
   Legend,
   Scatter,
 } from "recharts";
-import { Eye } from "lucide-react";
 
 const Page = () => {
   const [extractedText, setExtractedText] = useState("");
