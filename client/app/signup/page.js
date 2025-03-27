@@ -4,7 +4,7 @@ import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Person4Icon from "@mui/icons-material/Person4";
 import EmailIcon from "@mui/icons-material/Email";
 import PasswordIcon from "@mui/icons-material/Password";
@@ -21,7 +21,7 @@ function Page() {
     email: "",
     bio: "",
   });
-  const [authToken, setAuthToken] = useState(""); 
+  const [authToken, setAuthToken] = useState("");
 
   const handleChange = (e) => {
     setFormData({
@@ -29,6 +29,7 @@ function Page() {
       [e.target.name]: e.target.value,
     });
   };
+  useEffect();
 
   const handleSignup = () => {
     if (
@@ -41,19 +42,24 @@ function Page() {
       return;
     }
     setError(false);
-    
+
     const uniqueToken = crypto.randomUUID();
-    setAuthToken(uniqueToken); 
-    
+    setAuthToken(uniqueToken);
+
     const userData = {
       ...formData,
       authToken: uniqueToken,
     };
-  
-    localStorage.setItem("userData", JSON.stringify(userData));
-    localStorage.setItem("authToken", uniqueToken);
-    localStorage.setItem("points", 47);
+
     router.push("/responses");
+
+    useEffect(() => {
+      if (typeof window !== "undefined") {
+        localStorage.setItem("userData", JSON.stringify(userData));
+        localStorage.setItem("authToken", uniqueToken);
+        localStorage.setItem("points", 47);
+      }
+    }, []);
   };
 
   return (

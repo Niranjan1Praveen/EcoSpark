@@ -12,16 +12,17 @@ function LoginPage() {
   const [error, setError] = useState(false);
   const router = useRouter();
   const [storedUserData, setStoredUserData] = useState(null);
-  const [storedAuthToken, setStoredAuthToken] = useState(null);
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
 
   useEffect(() => {
-    setStoredUserData(JSON.parse(localStorage.getItem("userData") || null));
-    setStoredAuthToken(localStorage.getItem("authToken") || null);
-  }, []); 
+    if (typeof window !== "undefined") {
+      const storedData = localStorage.getItem("userData");
+      setStoredUserData(storedData ? JSON.parse(storedData) : null);
+    }
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -41,7 +42,6 @@ function LoginPage() {
       storedUserData.username === formData.username &&
       storedUserData.password === formData.password
     ) {
-      localStorage.setItem("authToken", storedAuthToken);
       router.push("/home");
     } else {
       setError(true);
