@@ -29,7 +29,6 @@ function Page() {
       [e.target.name]: e.target.value,
     });
   };
-  useEffect();
 
   const handleSignup = () => {
     if (
