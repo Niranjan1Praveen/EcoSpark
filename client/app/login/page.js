@@ -20,7 +20,9 @@ function LoginPage() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedData = localStorage.getItem("userData");
-      setStoredUserData(storedData ? JSON.parse(storedData) : null);
+      if (storedData) {
+        setStoredUserData(JSON.parse(storedData));
+      }
     }
   }, []);
 

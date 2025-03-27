@@ -50,7 +50,7 @@ const Page = () => {
               period: period.trim(),
               usage: usage,
             };
-          }).filter(entry => entry !== null); // Filter out invalid entries
+          }).filter(entry => entry !== null); 
   
           setElectricityData(formattedData);
         }

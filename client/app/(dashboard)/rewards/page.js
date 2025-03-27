@@ -4,11 +4,10 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 function page() {
   const [points, setPoints] = useState(0);
-  useEffect(
-    () => (
-      setPoints(localStorage.getItem("points"))
-    )
-  ), [];
+  useEffect(() => {
+    setPoints(localStorage.getItem("points"));
+  }, []);
+  
   const radius = 40;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (points / 100) * circumference;

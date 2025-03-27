@@ -62,28 +62,6 @@ const ApplianceSelection = () => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const authToken = localStorage.getItem("authToken");
-    try {
-      const response = await fetch(
-        `http://localhost:3001/save-appliances/${authToken}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(values),
-        }
-      );
-
-      const result = await response.json();
-      alert(result.message);
-    } catch (error) {
-      console.error("Error saving data:", error);
-    }
-  };
-
   return (
     <div className="section-p flex flex-col gap-5 min-h-screen">
       <h1 className="text-2xl sm:text-3xl font-bold mb-4">

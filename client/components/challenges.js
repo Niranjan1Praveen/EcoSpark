@@ -11,9 +11,12 @@ function Challenges(props) {
 
   useEffect(() => {
     const fetchUserScore = async () => {
+      if (typeof window === "undefined") return;
+  
       const authToken = localStorage.getItem("authToken");
-      
       if (!authToken) return;
+  
+      // Uncomment this if you need to fetch from an API
       // try {
       //   const response = await fetch(
       //     `http://localhost:3001/api/user/${authToken}`
@@ -29,11 +32,14 @@ function Challenges(props) {
       // } catch (error) {
       //   console.error("Error fetching score:", error);
       // }
-      setPoints(localStorage.getItem("points"));
+  
+      const storedPoints = localStorage.getItem("points");
+      setPoints(storedPoints ? Number(storedPoints) : 0); 
     };
   
     fetchUserScore();
   }, []);
+  
   return (
     <div>
       <div className="flex flex-col gap-3">

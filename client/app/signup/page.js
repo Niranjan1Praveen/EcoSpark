@@ -42,25 +42,24 @@ function Page() {
       return;
     }
     setError(false);
-
+  
     const uniqueToken = crypto.randomUUID();
     setAuthToken(uniqueToken);
-
+  
     const userData = {
       ...formData,
       authToken: uniqueToken,
     };
-
+  
+    if (typeof window !== "undefined") {
+      localStorage.setItem("userData", JSON.stringify(userData));
+      localStorage.setItem("authToken", uniqueToken);
+      localStorage.setItem("points", 47);
+    }
+  
     router.push("/responses");
-
-    useEffect(() => {
-      if (typeof window !== "undefined") {
-        localStorage.setItem("userData", JSON.stringify(userData));
-        localStorage.setItem("authToken", uniqueToken);
-        localStorage.setItem("points", 47);
-      }
-    }, []);
   };
+  
 
   return (
     <section className="flex flex-col gap-6 section-p min-h-screen overflow-hidden items-center justify-center bg-[var(--secondary-background)] p-4">

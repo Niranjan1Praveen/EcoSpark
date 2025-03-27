@@ -9,7 +9,17 @@ import Image from "next/image";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const [authToken, setAuthToken] = useState(null);
+  useEffect(() => {
+    const fetchUserName = async () => {
+      if (typeof window === "undefined") return;
+      const storedToken = localStorage.getItem("authToken");
+      if (!storedToken) return;
+      setAuthToken(storedToken);
+    };
 
+    fetchUserName();
+  }, []);
   return (
     <header className="flex items-center justify-between py-4 w-full shadow-sm z-50 section-p">
       {/* Logo */}
@@ -33,7 +43,7 @@ export default function Header() {
         >
           <Image src={xmark} alt="Close navbar" className="w-6 h-6" />
         </li>
-        {localStorage.getItem("authToken") && (
+        {authToken && (
           <li>
             <Link
               href={"/home"}

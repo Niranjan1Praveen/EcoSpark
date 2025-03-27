@@ -8,28 +8,17 @@ import ScratchCoupon from "@/components/scratchCoupon";
 import Topbar from "@/components/topbar";
 
 const Dashboard = () => {
-  const [userName, setUserName] = useState("");
-
   useEffect(() => {
     const fetchUserName = async () => {
+      if (typeof window === "undefined") return;
+  
       const authToken = localStorage.getItem("authToken");
       if (!authToken) return;
-      try {
-        const response = await fetch(
-          `http://localhost:3001/api/user/${authToken}`
-        );
-        const data = await response.json();
-        if (response.ok) {
-          setUserName(data.username);
-        } else {
-          console.error("Error fetching username:", data.error);
-        }
-      } catch (error) {
-        console.error("Error fetching username:", error);
-      }
     };
+  
     fetchUserName();
   }, []);
+  
 
   return (
     <div className="grid gap-12 section-p">
