@@ -13,7 +13,7 @@ const BillUploader = () => {
         }}
       >
         <Link
-          href="http://127.0.0.1:5000?bill_type=electricity" // Add query parameter
+          href="https://ecospark-billupload.onrender.com?bill_type=electricity" 
           className="hover:underline text-white font-semibold"
         >
           Upload your Electricity Bill
@@ -32,7 +32,7 @@ const BillUploader = () => {
         }}
       >
         <Link
-          href="http://127.0.0.1:5000?bill_type=water" // Add query parameter
+          href="https://ecospark-billupload.onrender.com?bill_type=water" 
           className="hover:underline text-white font-semibold"
         >
           Upload your Water Bill

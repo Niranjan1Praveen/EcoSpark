@@ -1,0 +1,115 @@
+Sign Up Page 
+const handleSignup = async () => {
+    if (
+      !formData.username ||
+      !formData.email ||
+      !formData.password ||
+      !formData.bio
+    ) {
+      setError(true);
+      return;
+    }
+    setError(false);
+    const uniqueToken = crypto.randomUUID();
+    const newUser = {
+      ...formData,
+      authToken: uniqueToken,
+    };
+
+    try {
+      const response = await fetch("http://localhost:3001/api/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newUser),
+      });
+      const result = await response.json();
+      if (response.ok) {
+        localStorage.setItem("authToken", uniqueToken);
+        router.push("/responses");
+      } else {
+        alert("Cannot Sign Up!");
+      }
+    } catch (error) {
+      alert("An error occurred. Please try again.");
+    }
+  };
+  Login Page
+  const handleLogin = async () => {
+    if (!formData.username || !formData.password) {
+      setError(true);
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:3001/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        localStorage.setItem("authToken", data.authToken);
+        router.push("/home");
+      } else {
+        setError(true);
+      }
+    } catch (error) {
+      console.error("Login Error:", error);
+      setError(true);
+    }
+  };
+TopBar 
+useEffect(() => {
+    const fetchUserDetails = async () => {
+      const authToken = localStorage.getItem("authToken");
+      if (!authToken) return;
+
+      try {
+        const response = await fetch(`http://localhost:3001/api/user/${authToken}`);
+        const data = await response.json();
+
+        if (response.ok) {
+          setUserDetails({
+            Username: data.userName ?? "",
+            Email: data.email ?? "",
+            Password: data.password ?? "",
+            Bio: data.bio ?? "",
+          });
+        } else {
+          console.error("Error fetching user details:", data.error);
+        }
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      }
+    };
+
+    fetchUserDetails();
+  }, []);
+User details
+useEffect(() => {
+    const fetchUserDetails = async () => {
+      const authToken = localStorage.getItem("authToken");
+      if (!authToken) return;
+
+      try {
+        const response = await fetch(
+          `http://localhost:3001/api/user/${authToken}`
+        );
+        const data = await response.json();
+
+        if (response.ok) {
+          setUserDetails(data);
+        } else {
+          console.error("Error fetching user details:", data.error);
+        }
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      }
+    };
+
+    fetchUserDetails();
+  }, []);

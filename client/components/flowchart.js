@@ -39,22 +39,42 @@ const flowChartData = [
 const Flowchart = () => {
   return (
     <div className="relative text-center overflow-hidden section-p">
-      <div className="flex gap-6 justify-center items-center py-7 z-10 flex-wrap md:flex-nowrap">
+      <div className="flex flex-wrap justify-center items-center py-7 z-10 gap-y-8 gap-x-6 md:flex-nowrap md:gap-6">
         {flowChartData.map((item, id) => (
           <React.Fragment key={id}>
+            {/* Item Container */}
             <div
-              className={`flex flex-col items-center w-40 transition-transform duration-300 hover:scale-110 ${
+              className={`flex flex-col items-center w-[calc(50%-12px)] md:w-40 transition-transform duration-300 hover:scale-110 ${
                 id % 2 === 0 ? "md:translate-y-6" : "md:-translate-y-6"
               }`}
             >
+              {/* Icon Circle */}
               <div
-                className={`w-[120px] h-[120px] rounded-full flex justify-center items-center shadow-md ${item.className}`}
+                className={`w-[90px] h-[90px] md:w-[120px] md:h-[120px] rounded-full flex justify-center items-center shadow-md ${item.className}`}
               >
-                <item.icon size={50} color="white" />
+                <item.icon size={40} color="white" className="md:size-[50px]" />
               </div>
-              <h3 className="mt-4 text-lg font-semibold">{item.title}</h3>
-              <p className="text-sm text-gray-600">{item.description}</p>
+
+              {/* Text Content */}
+              <h3 className="mt-3 md:mt-4 text-base md:text-lg font-semibold">
+                {item.title}
+              </h3>
+              <p className="text-xs md:text-sm text-gray-600 px-1">
+                {item.description}
+              </p>
             </div>
+
+            {/* Mobile Arrow (only between pairs) */}
+            {id % 2 === 0 && id < flowChartData.length - 1 && (
+              <div className="w-full flex justify-center md:hidden">
+                <ArrowRight
+                  size={24}
+                  className="text-gray-500 rotate-90 md:rotate-0"
+                />
+              </div>
+            )}
+
+            {/* Desktop Arrow */}
             {id < flowChartData.length - 1 && (
               <ArrowRight size={30} className="text-gray-500 hidden md:block" />
             )}

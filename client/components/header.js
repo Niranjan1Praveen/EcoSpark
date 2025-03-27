@@ -27,21 +27,36 @@ export default function Header() {
         ${isOpen ? "translate-x-0" : "translate-x-full"} 
         md:static md:h-auto md:w-auto md:bg-transparent md:flex-row md:shadow-none md:translate-x-0`}
       >
-        <li className="md:hidden cursor-pointer" onClick={() => setIsOpen(false)}>
+        <li
+          className="md:hidden cursor-pointer"
+          onClick={() => setIsOpen(false)}
+        >
           <Image src={xmark} alt="Close navbar" className="w-6 h-6" />
         </li>
+        {localStorage.getItem("authToken") && (
+          <li>
+            <Link
+              href={"/home"}
+              className="text-gray-900 font-medium hover:underline"
+            >
+              Start
+            </Link>
+          </li>
+        )}
+
         <li>
-          <Link href={"/home"} className="text-gray-900 font-medium hover:underline">
-            Start
-          </Link>
-        </li>
-        <li>
-          <Link href={"/"} className="text-gray-900 font-medium hover:underline">
+          <Link
+            href={"/"}
+            className="text-gray-900 font-medium hover:underline"
+          >
             About
           </Link>
         </li>
         <li>
-          <Link href={"/"} className="text-gray-900 font-medium hover:underline">
+          <Link
+            href={"/"}
+            className="text-gray-900 font-medium hover:underline"
+          >
             Contact
           </Link>
         </li>

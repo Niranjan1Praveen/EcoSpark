@@ -24,31 +24,88 @@ function Page() {
   const [isResLoaded, setIsResLoaded] = useState(false);
   const [challenges, setChallenges] = useState([]);
 
+  // useEffect(() => {
+  //   const fetchUserDetails = async () => {
+  //     const authToken = localStorage.getItem("authToken");
+  //     if (!authToken) return;
+
+  //     try {
+  //       const challengesResponse = await fetch(
+  //         "http://localhost:3001/user-challenges"
+  //       );
+  //       const challengesData = await challengesResponse.json();
+  //       console.log(challengesData);
+
+  //       if (challengesResponse.ok) {
+  //         setChallenges(challengesData.challenges.slice(0, 4));
+  //       } else {
+  //         console.error("Error fetching challenges:", challengesData.error);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
+
+  //   fetchUserDetails();
+  // }, []);
+  const CHALLENGE_CATEGORIES = [
+    "water conservation",
+    "energy efficiency",
+    "waste reduction",
+    "sustainable transportation",
+    "eco-friendly shopping"
+  ];
+  
+  // Icons mapping for challenges
+  const CHALLENGE_ICONS = {
+    "water conservation": <Droplet className="text-blue-500" />,
+    "energy efficiency": <Leaf className="text-green-500" />,
+    "waste reduction": <ShoppingCart className="text-yellow-500" />,
+    "sustainable transportation": <Footprints className="text-red-500" />,
+    "eco-friendly shopping": <ShoppingCart className="text-purple-500" />
+  };
   useEffect(() => {
-    const fetchUserDetails = async () => {
-      const authToken = localStorage.getItem("authToken");
-      if (!authToken) return;
-
+    const generateRandomChallenges = async () => {
+      setLoading(true);
       try {
-        const challengesResponse = await fetch(
-          "http://localhost:3001/user-challenges"
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        
+        // Generate 4 random challenges
+        const generatedChallenges = await Promise.all(
+          Array(4).fill().map(async (_, index) => {
+            const randomCategory = CHALLENGE_CATEGORIES[
+              Math.floor(Math.random() * CHALLENGE_CATEGORIES.length)
+            ];
+            
+            const prompt = `Generate one specific, actionable sustainability challenge about ${randomCategory} that a person can do daily. Make it very concise (10-15 words max) and prefix with an emoji related to the topic. Example: "💧 Take a 5-minute shower instead of 10-minute"`;
+            
+            const result = await model.generateContent(prompt);
+            const text = await result.response.text();
+            
+            return {
+              id: index + 1,
+              challenge: text.trim(),
+              category: randomCategory
+            };
+          })
         );
-        const challengesData = await challengesResponse.json();
-        console.log(challengesData);
-
-        if (challengesResponse.ok) {
-          setChallenges(challengesData.challenges.slice(0, 4));
-        } else {
-          console.error("Error fetching challenges:", challengesData.error);
-        }
+        
+        setChallenges(generatedChallenges);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error generating challenges:", error);
+        setChallenges([
+          { id: 1, challenge: "💧 Take a 5-minute shower instead of 10-minute", category: "water conservation" },
+          { id: 2, challenge: "♻️ Bring reusable bags to the grocery store", category: "waste reduction" },
+          { id: 3, challenge: "🚶 Walk or bike for trips under 1 mile", category: "sustainable transportation" },
+          { id: 4, challenge: "🌱 Try one meatless meal this week", category: "eco-friendly shopping" }
+        ]);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchUserDetails();
+    generateRandomChallenges();
   }, []);
-
   const sendPrompt = async (selectedPrompt) => {
     const finalPrompt = selectedPrompt || prompt.trim();
     if (!finalPrompt) return;

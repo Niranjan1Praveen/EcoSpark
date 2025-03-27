@@ -23,29 +23,23 @@ function LoginPage() {
     });
   };
 
-  const handleLogin = async () => {
+  const handleLogin = () => {
     if (!formData.username || !formData.password) {
       setError(true);
       return;
     }
-
-    try {
-      const response = await fetch("http://localhost:3001/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-      
-      if (response.ok) {
-        localStorage.setItem("authToken", data.authToken);
-        router.push("/home");
-      } else {
-        setError(true);
-      }
-    } catch (error) {
-      console.error("Login Error:", error);
+  
+    const storedUserData = JSON.parse(localStorage.getItem("userData"));
+    const storedAuthToken = localStorage.getItem("authToken");
+  
+    if (
+      storedUserData &&
+      storedUserData.username === formData.username &&
+      storedUserData.password === formData.password
+    ) {
+      localStorage.setItem("authToken", storedAuthToken);
+      router.push("/home");
+    } else {
       setError(true);
     }
   };
@@ -55,7 +49,7 @@ function LoginPage() {
       <Link href={"/"} className="absolute top-0 left-0 p-5">
         <CloseOutlined />
       </Link>
-      <div className="flex flex-col gap-4 px-8 py-10 bg-white rounded-xl shadow-md min-w-[400px]">
+      <div className="flex flex-col gap-4 px-8 py-10 bg-white rounded-xl shadow-md w-full max-w-md">
         <h2 className="font-bold text-2xl text-center">
           Log in to EcoSpark
         </h2>

@@ -12,22 +12,24 @@ function Challenges(props) {
   useEffect(() => {
     const fetchUserScore = async () => {
       const authToken = localStorage.getItem("authToken");
+
       if (!authToken) return;
-      try {
-        const response = await fetch(
-          `http://localhost:3001/api/user/${authToken}`
-        );
-        const data = await response.json();
-        console.log(data);
+      // try {
+      //   const response = await fetch(
+      //     `http://localhost:3001/api/user/${authToken}`
+      //   );
+      //   const data = await response.json();
+      //   console.log(data);
   
-        if (response.ok) {
-          setPoints(data.userScore ?? 0);
-        } else {
-          console.error("Error fetching score:", data.error);
-        }
-      } catch (error) {
-        console.error("Error fetching score:", error);
-      }
+      //   if (response.ok) {
+      //     setPoints(data.userScore ?? 0);
+      //   } else {
+      //     console.error("Error fetching score:", data.error);
+      //   }
+      // } catch (error) {
+      //   console.error("Error fetching score:", error);
+      // }
+      setPoints(localStorage.getItem("points"));
     };
   
     fetchUserScore();

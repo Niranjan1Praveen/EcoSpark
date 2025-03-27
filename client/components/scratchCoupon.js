@@ -28,27 +28,13 @@ import Image from "next/image";
 const ScratchCoupon = () => {
   const [selectedVoucher, setSelectedVoucher] = useState(null);
   const [isComplete, setIsComplete] = useState(false);
-  const [userDetails, setUserDetails] = useState(null);
+  const [points, setPoints] = useState(null);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
       const authToken = localStorage.getItem("authToken");
       if (!authToken) return;
-
-      try {
-        const response = await fetch(
-          `http://localhost:3001/api/user/${authToken}`
-        );
-        const data = await response.json();
-
-        if (response.ok) {
-          setUserDetails(data);
-        } else {
-          console.error("Error fetching user details:", data.error);
-        }
-      } catch (error) {
-        console.error("Error fetching user details:", error);
-      }
+      setPoints(localStorage.getItem("points") || 0)
     };
 
     fetchUserDetails();
@@ -77,7 +63,7 @@ const ScratchCoupon = () => {
 
   return (
     <main className="flex flex-col gap-6 p-5 bg-center rounded-md mx-auto">
-      <div className="grid gap-6 sm:grid-cols-2 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 ">
+      <div className="grid gap-6 sm:grid-cols-1 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ">
         {vouchersList.map((voucher, index) => (
           <div
             key={index}
@@ -98,7 +84,7 @@ const ScratchCoupon = () => {
               </h3>
               <p
                 className={`${
-                  userDetails?.userScore < voucher.points
+                  points < voucher.points
                     ? "text-red-400"
                     : "text-[#1ed760]"
                 } text-sm sm:text-base`}
@@ -108,7 +94,7 @@ const ScratchCoupon = () => {
             </div>
 
             <AlertDialog>
-              {userDetails?.userScore >= voucher.points && (
+              {points >= voucher.points && (
                 <AlertDialogTrigger
                   className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-[#1CB0F6] text-white rounded-[5px] z-10"
                   onClick={() => setSelectedVoucher(voucher)}

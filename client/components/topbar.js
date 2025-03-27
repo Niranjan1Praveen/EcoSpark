@@ -26,32 +26,27 @@ function Topbar() {
   });
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
-    const fetchUserDetails = async () => {
+    const fetchUserDetails = () => {
       const authToken = localStorage.getItem("authToken");
       if (!authToken) return;
-
-      try {
-        const response = await fetch(`http://localhost:3001/api/user/${authToken}`);
-        const data = await response.json();
-
-        if (response.ok) {
-          setUserDetails({
-            Username: data.userName ?? "",
-            Email: data.email ?? "",
-            Password: data.password ?? "",
-            Bio: data.bio ?? "",
-          });
-        } else {
-          console.error("Error fetching user details:", data.error);
-        }
-      } catch (error) {
-        console.error("Error fetching user details:", error);
+  
+      // Get user data from localStorage
+      const storedUserData = JSON.parse(localStorage.getItem("userData"));
+      
+      if (storedUserData) {
+        setUserDetails({
+          Username: storedUserData.username ?? "",
+          Email: storedUserData.email ?? "",
+          Password: storedUserData.password ?? "", 
+          Bio: storedUserData.bio ?? "",
+        });
+      } else {
+        console.error("No user data found in localStorage");
       }
     };
-
+  
     fetchUserDetails();
   }, []);
 
@@ -81,30 +76,6 @@ function Topbar() {
     }
   };
 
-  const handleDeleteAccount = async () => {
-    const authToken = localStorage.getItem("authToken");
-    if (!authToken) return;
-
-    try {
-      const response = await fetch(`http://localhost:3001/api/user/delete`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        toast.success("Account deleted successfully.");
-        localStorage.removeItem("authToken");
-        router.push("/"); 
-      } else {
-        toast.error("Failed to delete account.");
-      }
-    } catch (error) {
-      console.error("Error deleting account:", error);
-      toast.error("Something went wrong.");
-    }
-  };
 
   return (
     <div className="flex items-center justify-between gap-3">
@@ -198,7 +169,7 @@ function Topbar() {
             </DialogHeader>
             <DialogFooter className="flex justify-end gap-4">
               <Button onClick={() => setIsDeleteDialogOpen(false)}>Cancel</Button>
-              <Button variant="destructive" onClick={handleDeleteAccount}>
+              <Button variant="destructive">
                 Yes, Delete
               </Button>
             </DialogFooter>

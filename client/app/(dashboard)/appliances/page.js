@@ -90,7 +90,7 @@ const ApplianceSelection = () => {
         Select Your Appliances
       </h1>
       <form
-        className="grid lg:grid-cols-3 md:grid-cols-2 gap-[15px]"
+        className="grid grid-cols-1 md:grid-cols-2  gap-[15px]"
         onSubmit={handleSubmit}
       >
         {appliances.map((section, index) => (

@@ -1,15 +1,20 @@
+"use client";
 import Image from "next/image";
 import billUpload from "../public/seo/bill-upload.png";
 import trackUsage from "../public/seo/track-usage.png";
 import saveRewards from "../public/seo/save-rewards.png";
 import Link from "next/link";
+import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 
 function Seo() {
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.5,
+    rootMargin: '800px 0px'
+  });
   return (
-    <div className="bg-[var(--secondary-background)] section-p flex flex-col py-10">
-      {/* <h1 className="text-white text-3xl md:text-4xl font-bold text-center my-4">
-        How It Works?
-      </h1> */}
+    <div className="section-p flex flex-col py-10">
       {[
         {
           image: billUpload,
@@ -33,29 +38,43 @@ function Seo() {
           reverse: false,
         },
       ].map((item, index) => (
-        <div
+        <motion.div
           key={index}
+          ref={ref}
+          initial={{ opacity: 0, y: 50 }}
+          animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+          transition={{ duration: 0.5, delay: index * 0.1 }}
           className={`flex flex-col md:flex-row ${
             item.reverse ? "md:flex-row-reverse" : ""
           } items-center justify-center gap-8 md:gap-16 mb-16`}
         >
-          <div className="flex flex-col max-w-lg gap-3 text-center md:text-left">
+          <motion.div
+            className="flex flex-col max-w-lg gap-3 text-center md:text-left"
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.5, delay: index * 0.1 + 0.2 }}
+          >
             <small className="bg-[var(--sky-blue)] uppercase rounded-[5px] p-1 w-fit text-black">
               {item.tagline}
             </small>
-            <h2 className="text-2xl md:text-3xl font-semibold">
-              {item.title}
-            </h2>
+            <h2 className="text-2xl md:text-3xl font-semibold">{item.title}</h2>
             <p className="text-base md:text-lg">{item.text}</p>
-          </div>
-          <Image
-            src={item.image}
-            width={300}
-            height={300}
-            alt={item.title}
-            className="w-64 h-64 md:w-96 md:h-96"
-          />
-        </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.5, delay: index * 0.1 + 0.3 }}
+          >
+            <Image
+              src={item.image}
+              width={300}
+              height={300}
+              alt={item.title}
+              className="w-64 h-64 md:w-96 md:h-96"
+            />
+          </motion.div>
+        </motion.div>
       ))}
 
       {/* Call-to-Action Section */}

@@ -7,13 +7,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Grade, PeopleSharp } from "@mui/icons-material";
 
 export default function Navbar() {
-  const [isNavbarOpen, setIsNavbarOpen] = useState(true);
+  const [isNavbarOpen, setIsNavbarOpen] = useState();
   const pathname = usePathname();
 
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
         setIsNavbarOpen(false);
+      }
+      else{
+        setIsNavbarOpen(true);
       }
     };
     window.addEventListener("resize", handleResize);

@@ -10,7 +10,7 @@ import { HelpCircle } from "lucide-react";
 
 const Faqs = () => {
   return (
-    <section className="flex flex-col gap-10 section-p items-center justify-center">
+    <section className="flex flex-col gap-10 section-p items-center justify-center py-[80px]">
       <h1 className="text-3xl font-bold flex items-center gap-4">
         <HelpCircle /> Frequently Asked Questions
       </h1>
