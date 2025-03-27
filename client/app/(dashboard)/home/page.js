@@ -2,8 +2,7 @@
 import BillUploader from "@/components/billReader";
 import Challenges from "@/components/challenges";
 import Topbar from "@/components/topbar";
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import {
   LineChart,
   Line,
@@ -20,73 +19,44 @@ import {
 
 const Page = () => {
   const [extractedText, setExtractedText] = useState("");
-  const [ElectricityBillDetails, setElectricityBillDetails] = useState(null);
-  const [WaterBillDetails, setWaterBillDetails] = useState(null);
+  const [electricityBillDetails, setElectricityBillDetails] = useState(null);
+  const [waterBillDetails, setWaterBillDetails] = useState(null);
   const [electricityData, setElectricityData] = useState([]);
   const [waterData, setWaterData] = useState([]);
 
-  // Electricity Bill
-  useEffect(() => {
-    axios
-      .get("http://localhost:3001/api/electricity-bills")
-      .then((response) => {
-        const data = response.data[response.data.length - 1];
-        setElectricityBillDetails(data);
-  
-        if (data?.consumption_history) {
-          const consumptionEntries = data.consumption_history.split(", ");
-  
-          const formattedData = consumptionEntries.map((entry) => {
-            const [period, units] = entry.split(": ");
-            const usage = parseInt(units.replace("units", "").trim(), 10);
-  
-            if (isNaN(usage)) {
-              console.warn(`Invalid units value: ${units}`);
-              return null;
-            }
-  
-            return {
-              period: period.trim(),
-              usage: usage,
-            };
-          }).filter(entry => entry !== null); 
-  
-          setElectricityData(formattedData);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching electricity data:", error);
-      });
-  }, []);
+  const handleBillData = (data) => {
+    if (data.bill_type === "electricity") {
+      setElectricityBillDetails(data);
+      if (data?.consumption_history) {
+        const consumptionEntries = data.consumption_history.split(", ");
+        const formattedData = consumptionEntries.map((entry) => {
+          const [period, units] = entry.split(": ");
+          const usage = parseInt(units.replace("units", "").trim(), 10);
+          if (isNaN(usage)) {
+            console.warn(`Invalid units value: ${units}`);
+            return null;
+          }
+          return { period: period.trim(), usage: usage };
+        }).filter(entry => entry !== null);
+        setElectricityData(formattedData);
+      }
+    } else if (data.bill_type === "water") {
+      setWaterBillDetails(data);
+      if (data?.bill_history) {
+        const historyPattern = /(\w+\s\d{4}):\s*(\d+\.?\d*)\s*units/g;
+        const matches = [...data.bill_history.matchAll(historyPattern)];
+        const formattedData = matches.map((match) => ({
+          month: match[1],
+          usage: parseFloat(match[2]),
+        }));
+        setWaterData(formattedData);
+      }
+    }
+  };
 
-  // Water Bill
-  useEffect(() => {
-    axios
-      .get("http://localhost:3001/api/water-bills")
-      .then((response) => {
-        const data = response.data[response.data.length - 1];
-        setWaterBillDetails(data);
-
-        if (data && data.bill_history) {
-          const historyPattern = /(\w+\s\d{4}):\s*(\d+\.?\d*)\s*units/g;
-          const matches = [...data.bill_history.matchAll(historyPattern)];
-          const formattedData = matches.map((match) => ({
-            month: match[1],
-            usage: parseFloat(match[2]),
-          }));
-          setWaterData(formattedData);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching water data:", error);
-      });
-  }, []);
   const maxUsage = Math.max(...waterData.map((item) => item.usage));
-  const maxDataPoint = waterData.find((item) => item.usage === maxUsage); 
-  console.log("Electricity Bill Details:", ElectricityBillDetails);
-  console.log("Water Bill Details:", WaterBillDetails);
-  console.log("Water Data:", waterData);
-  console.log("Electricity Data:", electricityData);
+  const maxDataPoint = waterData.find((item) => item.usage === maxUsage);
+
   return (
     <main className="flex flex-col section-p gap-7 w-full min-h-screen">
       <Topbar />
@@ -101,7 +71,11 @@ const Page = () => {
           <div className="w-full bg-white shadow-md rounded-xl flex flex-col">
             <BillUploader
               extractedText={extractedText}
-              setExtractedText={setExtractedText}
+              setExtractedText={(text) => {
+                setExtractedText(text);
+                const data = JSON.parse(text); 
+                handleBillData(data); 
+              }}
             />
           </div>
         </div>
@@ -110,21 +84,19 @@ const Page = () => {
         {[
           {
             title: "Electricity Bill Amount",
-            value:
-              "₹" + (ElectricityBillDetails?.bill_amount || "Not Available"),
+            value: "₹" + (electricityBillDetails?.bill_amount || "Not Available"),
           },
           {
             title: "Electricity Units Consumed",
-            value:
-              ElectricityBillDetails?.current_units_consumed || "Not Available",
+            value: electricityBillDetails?.current_units_consumed || "Not Available",
           },
           {
             title: "Electricity Goal Units",
-            value: ElectricityBillDetails?.goal_units || "Not Available",
+            value: electricityBillDetails?.goal_units || "Not Available",
           },
           {
             title: "Subsidies for Electricity",
-            value: ElectricityBillDetails?.subsidies_unit || "Not Available",
+            value: electricityBillDetails?.subsidies_unit || "Not Available",
           },
         ].map((item, index) => (
           <div
@@ -132,9 +104,9 @@ const Page = () => {
             className="bg-white shadow-md h-44 rounded-xl p-4 flex flex-col hover:shadow-lg transition-all duration-300 overflow-auto"
           >
             <p className="text-lg font-semibold mb-1">{item.title}</p>
-            {item.title === "Subsidies" && item.value !== "Not Available" ? (
+            {item.title === "Subsidies for Electricity" && item.value !== "Not Available" ? (
               <div className="text-[1.1rem] font-bold">
-s                {item.value.split(". ").map((line, i) => (
+                {item.value.split(". ").map((line, i) => (
                   <p key={i} className="mb-1 text-[#1CB0F6]">
                     • {line.trim()}
                   </p>
@@ -152,20 +124,19 @@ s                {item.value.split(". ").map((line, i) => (
         {[
           {
             title: "Water Bill Amount",
-            value: WaterBillDetails?.bill_amount || "Not Available",
+            value: waterBillDetails?.bill_amount || "Not Available",
           },
           {
             title: "Water Units Consumed",
-            value:
-            WaterBillDetails?.water_usage || "Not Available",
+            value: waterBillDetails?.water_usage || "Not Available",
           },
           {
             title: "Water Goal Units",
-            value: WaterBillDetails?.goal_units || "Not Available",
+            value: waterBillDetails?.goal_units || "Not Available",
           },
           {
             title: "Subsidies for Water",
-            value: WaterBillDetails?.subsidies_unit || "Not Available",
+            value: waterBillDetails?.subsidies_unit || "Not Available",
           },
         ].map((item, index) => (
           <div
@@ -173,7 +144,7 @@ s                {item.value.split(". ").map((line, i) => (
             className="bg-white shadow-md h-44 rounded-xl p-4 flex flex-col hover:shadow-lg transition-all duration-300 overflow-auto"
           >
             <p className="text-lg font-semibold mb-1">{item.title}</p>
-            {item.title === "Subsidies" && item.value !== "Not Available" ? (
+            {item.title === "Subsidies for Water" && item.value !== "Not Available" ? (
               <div className="text-[1.1rem] font-bold">
                 {item.value.split(". ").map((line, i) => (
                   <p key={i} className="mb-1 text-[#1CB0F6]">
@@ -275,7 +246,7 @@ s                {item.value.split(". ").map((line, i) => (
                       />
                     );
                   }
-                  return null; 
+                  return null;
                 }}
               />
               <Scatter

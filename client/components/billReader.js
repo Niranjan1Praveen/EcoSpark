@@ -1,9 +1,30 @@
 "use client";
-import React from "react";
-import Link from "next/link";
+import React, { useState } from "react";
+import axios from "axios";
 import { DropletIcon, FileUp, ZapIcon } from "lucide-react";
 
-const BillUploader = () => {
+const BillUploader = ({ setExtractedText }) => {
+  const [electricityFile, setElectricityFile] = useState(null);
+  const [waterFile, setWaterFile] = useState(null);
+
+  const handleFileUpload = async (billType, file) => {
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("bill_type", billType);
+
+    try {
+      const response = await axios.post("https://ecospark-billupload.onrender.com/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      setExtractedText(JSON.stringify(response.data));
+      console.log(`${billType} bill data:`, response.data);
+    } catch (error) {
+      console.error(`Error uploading ${billType} bill:`, error);
+    }
+  };
+
   return (
     <div className="relative h-40 rounded-xl overflow-hidden flex bg-[#1CB0F6]">
       <div
@@ -12,12 +33,18 @@ const BillUploader = () => {
           clipPath: "polygon(0% 0%, 100% 0%, 80% 100%, 0% 100%)",
         }}
       >
-        <Link
-          href="https://ecospark-billupload.onrender.com?bill_type=electricity" 
-          className="hover:underline text-white font-semibold"
-        >
+        <label className="text-white font-semibold cursor-pointer">
           Upload your Electricity Bill
-        </Link>
+          <input
+            type="file"
+            accept=".pdf"
+            className="hidden"
+            onChange={(e) => {
+              setElectricityFile(e.target.files[0]);
+              handleFileUpload("electricity", e.target.files[0]);
+            }}
+          />
+        </label>
         <ZapIcon className="absolute z-[-10] text-black w-20 h-20" />
       </div>
 
@@ -31,12 +58,18 @@ const BillUploader = () => {
           clipPath: "polygon(20% 0%, 100% 0%, 100% 100%, 0% 100%)",
         }}
       >
-        <Link
-          href="https://ecospark-billupload.onrender.com?bill_type=water" 
-          className="hover:underline text-white font-semibold"
-        >
+        <label className="text-white font-semibold cursor-pointer">
           Upload your Water Bill
-        </Link>
+          <input
+            type="file"
+            accept=".pdf"
+            className="hidden"
+            onChange={(e) => {
+              setWaterFile(e.target.files[0]);
+              handleFileUpload("water", e.target.files[0]);
+            }}
+          />
+        </label>
         <DropletIcon className="absolute z-[-10] text-black w-20 h-20" />
       </div>
     </div>

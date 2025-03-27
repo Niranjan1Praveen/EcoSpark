@@ -135,3 +135,60 @@ Appliances
       console.error("Error saving data:", error);
     }
   };
+
+    // Electricity Bill
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/api/electricity-bills")
+      .then((response) => {
+        const data = response.data[response.data.length - 1];
+        setElectricityBillDetails(data);
+  
+        if (data?.consumption_history) {
+          const consumptionEntries = data.consumption_history.split(", ");
+  
+          const formattedData = consumptionEntries.map((entry) => {
+            const [period, units] = entry.split(": ");
+            const usage = parseInt(units.replace("units", "").trim(), 10);
+  
+            if (isNaN(usage)) {
+              console.warn(`Invalid units value: ${units}`);
+              return null;
+            }
+  
+            return {
+              period: period.trim(),
+              usage: usage,
+            };
+          }).filter(entry => entry !== null); 
+  
+          setElectricityData(formattedData);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching electricity data:", error);
+      });
+  }, []);
+
+  // Water Bill
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/api/water-bills")
+      .then((response) => {
+        const data = response.data[response.data.length - 1];
+        setWaterBillDetails(data);
+
+        if (data && data.bill_history) {
+          const historyPattern = /(\w+\s\d{4}):\s*(\d+\.?\d*)\s*units/g;
+          const matches = [...data.bill_history.matchAll(historyPattern)];
+          const formattedData = matches.map((match) => ({
+            month: match[1],
+            usage: parseFloat(match[2]),
+          }));
+          setWaterData(formattedData);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching water data:", error);
+      });
+  }, []);
