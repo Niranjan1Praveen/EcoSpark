@@ -12,7 +12,7 @@ function Challenges(props) {
   useEffect(() => {
     const fetchUserScore = async () => {
       const authToken = localStorage.getItem("authToken");
-
+      
       if (!authToken) return;
       // try {
       //   const response = await fetch(
