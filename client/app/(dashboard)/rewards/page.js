@@ -8,7 +8,7 @@ function page() {
     () => (
       setPoints(localStorage.getItem("points"))
     )
-  );
+  ), [];
   const radius = 40;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (points / 100) * circumference;

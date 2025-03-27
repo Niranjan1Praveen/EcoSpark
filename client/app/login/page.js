@@ -4,17 +4,24 @@ import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CloseOutlined } from "@mui/icons-material";
 
 function LoginPage() {
   const [error, setError] = useState(false);
   const router = useRouter();
+  const [storedUserData, setStoredUserData] = useState(null);
+  const [storedAuthToken, setStoredAuthToken] = useState(null);
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
+
+  useEffect(() => {
+    setStoredUserData(JSON.parse(localStorage.getItem("userData") || null));
+    setStoredAuthToken(localStorage.getItem("authToken") || null);
+  }, []); 
 
   const handleChange = (e) => {
     setFormData({
@@ -28,10 +35,7 @@ function LoginPage() {
       setError(true);
       return;
     }
-  
-    const storedUserData = JSON.parse(localStorage.getItem("userData"));
-    const storedAuthToken = localStorage.getItem("authToken");
-  
+
     if (
       storedUserData &&
       storedUserData.username === formData.username &&
@@ -50,9 +54,7 @@ function LoginPage() {
         <CloseOutlined />
       </Link>
       <div className="flex flex-col gap-4 px-8 py-10 bg-white rounded-xl shadow-md w-full max-w-md">
-        <h2 className="font-bold text-2xl text-center">
-          Log in to EcoSpark
-        </h2>
+        <h2 className="font-bold text-2xl text-center">Log in to EcoSpark</h2>
         {error && (
           <p className="flex items-center gap-3 bg-red-100 text-red-700 py-3 px-4 rounded-[5px] text-sm border border-red-300">
             <ErrorOutlineOutlinedIcon /> Invalid credentials.
@@ -95,7 +97,7 @@ function LoginPage() {
         </div>
       </div>
       <p className="text-sm text-center text-gray-500">
-        Don’t have an account?{" "}
+        Don't have an account?{" "}
         <Link
           href="/signup"
           className="text-green-500 underline hover:text-green-400"

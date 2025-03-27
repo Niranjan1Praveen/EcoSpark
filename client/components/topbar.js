@@ -14,7 +14,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 
 function Topbar() {
@@ -32,7 +31,6 @@ function Topbar() {
       const authToken = localStorage.getItem("authToken");
       if (!authToken) return;
   
-      // Get user data from localStorage
       const storedUserData = JSON.parse(localStorage.getItem("userData"));
       
       if (storedUserData) {

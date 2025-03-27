@@ -24,30 +24,6 @@ function Page() {
   const [isResLoaded, setIsResLoaded] = useState(false);
   const [challenges, setChallenges] = useState([]);
 
-  // useEffect(() => {
-  //   const fetchUserDetails = async () => {
-  //     const authToken = localStorage.getItem("authToken");
-  //     if (!authToken) return;
-
-  //     try {
-  //       const challengesResponse = await fetch(
-  //         "http://localhost:3001/user-challenges"
-  //       );
-  //       const challengesData = await challengesResponse.json();
-  //       console.log(challengesData);
-
-  //       if (challengesResponse.ok) {
-  //         setChallenges(challengesData.challenges.slice(0, 4));
-  //       } else {
-  //         console.error("Error fetching challenges:", challengesData.error);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
-
-  //   fetchUserDetails();
-  // }, []);
   const CHALLENGE_CATEGORIES = [
     "water conservation",
     "energy efficiency",
