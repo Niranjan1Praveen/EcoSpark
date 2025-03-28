@@ -10,16 +10,26 @@ const BillUploader = ({ setExtractedText }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleFileUpload = async (billType, file) => {
-    if (!file) return;
-
+    if (!file) {
+      toast.error("No file selected!");
+      return;
+    }
+  
+    if (file.type !== "application/pdf") {
+      toast.error("Please upload a PDF file!");
+      return;
+    }
+  
     const formData = new FormData();
     formData.append("file", file);
     formData.append("bill_type", billType);
-
+  
+    let toastId; 
+  
     try {
       setIsLoading(true);
-      const toastId = toast.loading(`Uploading ${billType} bill...`);
-
+      toastId = toast.loading(`Uploading ${billType} bill...`);
+  
       const response = await axios.post(
         "https://ecospark-billupload.onrender.com/upload",
         formData,
@@ -27,21 +37,21 @@ const BillUploader = ({ setExtractedText }) => {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
-
+  
       setExtractedText(JSON.stringify(response.data));
-      toast.success(`${billType} bill processed successfully!`, { id: toastId });
+      toast.success(`${billType} bill processed successfully!`, {
+        id: toastId,
+      });
       console.log(`${billType} bill data:`, response.data);
-
     } catch (error) {
       console.error(`Error uploading ${billType} bill:`, error);
-      toast.error(`Failed to upload ${billType} bill. Please try again.`, {
-        id: toastId,
+      toast.error(`Failed to upload ${billType} bill. Try again.`, {
+        id: toastId, 
       });
     } finally {
       setIsLoading(false);
     }
   };
-
   return (
     <div className="relative h-40 rounded-xl overflow-hidden flex bg-[#1CB0F6]">
       {/* Electricity Bill Upload */}
